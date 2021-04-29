@@ -5,7 +5,7 @@ export default function Question(props) {
         <div className="questionCard">
             <div className="question">{props.question}</div>
             <div className="choices">
-                {props.choices.map((el, i) => props.answer === i ? <Choice text={el} click={props.click} index={i} answer={true}/> : <Choice text={el} click={props.click} index={i} answer={false}/>)}
+                {props.choices.map((el, i) => props.answer === i ? <Choice text={el} click={props.click} index={i} answer={true} key={i + '' + props.qNum} /> : <Choice text={el} click={props.click} index={i} answer={false} key={i + '' + props.qNum}/>)}
             </div>
         </div>
     )

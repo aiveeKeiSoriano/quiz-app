@@ -5,8 +5,11 @@ import Confetti from 'react-dom-confetti';
 export default function Choice(props) {
     let [background, setBackground] = useState('transparent')
     let [confetti, setConfetti] = useState(false)
+
     let clicked = () => {
-        if (props.click(props.index)) {
+        let test = props.click(props.index)
+        console.log(test)
+        if (test) {
             if (props.answer) {
                 setBackground('green')
                 setConfetti(true)
@@ -18,7 +21,7 @@ export default function Choice(props) {
     return (
         <div>
             <button onClick={clicked} style={{ backgroundColor: background }}>{props.text}</button>
-            <Confetti active={confetti}/>
+            <Confetti active={confetti} />
         </div>
     )
 }

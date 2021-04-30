@@ -2,8 +2,7 @@ import QuizApp from './QuizApp'
 import {
     BrowserRouter as Router,
     Switch,
-    Route,
-    Link
+    Route
 } from "react-router-dom";
 import Result from './Result'
 

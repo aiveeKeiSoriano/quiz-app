@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
-import Question from './Question'
+import Choice from './Choice'
 
 export default function QuizApp(props) {
     let history = useHistory()
@@ -29,52 +29,70 @@ export default function QuizApp(props) {
 
     let [qNum, setQNum] = useState(0)
     let [score, setScore] = useState(0)
-    let [selected, setSelected] = useState(null)
-    let [answers, setAnswers] = useState([])
-
-    setTimeout(() => {
-        if (qNum !== questions.length - 1) {
-            setQNum(++qNum)
-            setSelected(null)
-            setWidth(100)
-        }
-        else {
-            history.push({
-                pathname: '/result',
-                state: {
-                    score: score,
-                    questions: questions,
-                    answers: answers
-                }
-            })
-        }
-    }, 5000)
+    let [answered, setAnswered] = useState(false)
+    let [answers, setAnswers] = useState(new Array(questions.length).fill(false))
 
     let checkAnswer = (answer) => {
-        if (selected === null) {
+        if (!answered) {   
+            setAnswered(true)
+            let copy = answers.slice()
+            copy[qNum] = answer
+            setAnswers(copy)
             if (answer === questions[qNum].answer) {
                 setScore(++score)
             }
-            setSelected(answer)
-            let copy = answers.slice()
-            copy.push(answer)
-            setAnswers(copy)
-            return true
+            setTimeout(() => nextQuestion(), 1000)
         }
-        return false
     }
+
+    let nextQuestion = () => {
+        console.log(answers, '1')
+        if (qNum !== questions.length - 1) {
+            setQNum(++qNum)
+            setWidth(100)
+        }
+        else goToResult()
+    }
+
+    let goToResult = () => {
+        console.log(answers)
+        history.push({
+            pathname: '/result',
+            state: {
+                score: score,
+                questions: questions,
+                answers: answers
+            }
+        })
+    }
+
+    // setTimeout(() => {
+    //     if (qNum !== questions.length - 1) {
+    //         nextQuestion()
+    //     }
+    //     else {
+    //         goToResult()
+    //     }
+    // }, 5000)
+
     let [width, setWidth] = useState(100)
-    // setInterval(() => {
-    //     console.log(width)
-    //     if (width > 0) setWidth(width - 2)
-    //     else setWidth(100)
-    // }, 500)
+
+    useEffect(() => {
+        setAnswered(false)
+    }, [qNum])
 
     return (
         <div className="quiz-app">
             <div className="score">Score: {score}</div>
-            <Question question={questions[qNum].question} choices={questions[qNum].choices} click={checkAnswer} answer={questions[qNum].answer} key={qNum} qNum={qNum}/>
-            <div className="timer" style={{width: width + '%'}}></div>
+            <div className="questionCard">
+            <div className="question">{questions[qNum].question}</div>
+            <div className="choices">
+                    {questions[qNum].choices.map((el, i) => questions[qNum].answer === i ? <Choice text={el} click={checkAnswer} index={i} answered={answered} answer={true} key={i + '' + qNum} /> : <Choice text={el} click={checkAnswer} answered={answered} index={i} answer={false} key={i + '' + qNum}/>)}
+            </div>
+        </div>
+
+            <div className="timer" style={{ width: width + '%' }}></div>
+            <div className="test">{answers}</div>
         </div>
     )
 }

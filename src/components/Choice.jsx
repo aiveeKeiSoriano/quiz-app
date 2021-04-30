@@ -7,20 +7,23 @@ export default function Choice(props) {
     let [confetti, setConfetti] = useState(false)
 
     let clicked = () => {
-        let test = props.click(props.index)
-        console.log(test)
-        if (test) {
+        if (props.answered) return
+        else {    
+            console.log('clicked')
+            props.click(props.index)
             if (props.answer) {
                 setBackground('green')
                 setConfetti(true)
             }
-            else setBackground('red')
+            else {
+                setBackground('red')
+            }
         }
     }
 
     return (
         <div>
-            <button onClick={clicked} style={{ backgroundColor: background }}>{props.text}</button>
+            <button onClick={() => clicked()} style={{ backgroundColor: background }}>{props.text}</button>
             <Confetti active={confetti} />
         </div>
     )

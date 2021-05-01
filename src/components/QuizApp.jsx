@@ -32,6 +32,7 @@ export default function QuizApp(props) {
     let [answered, setAnswered] = useState(false)
     let [answers, setAnswers] = useState(new Array(questions.length).fill(false))
     let [first, setFirst] = useState(true)
+    let [color, setColor] = useState('#68E32B')
 
     let checkAnswer = (answer) => {
         if (!answered) {
@@ -50,6 +51,7 @@ export default function QuizApp(props) {
         if (qNum !== questions.length - 1) {
             setQNum(++qNum)
             setWidth(100)
+            setColor('#68E32B')
         }
         else goToResult()
     }
@@ -85,6 +87,10 @@ export default function QuizApp(props) {
 
     useEffect(() => {
         if (width < 0) nextQuestion()
+        else if (width < 25) setColor('#E82725')
+        else if (width < 45) setColor('#FF862B')
+        else if (width < 65) setColor('#FEE645')
+        else if (width < 80) setColor('#BFFD30')
         // eslint-disable-next-line
     }, [width])
 
@@ -97,7 +103,11 @@ export default function QuizApp(props) {
                     {questions[qNum].choices.map((el, i) => questions[qNum].answer === i ? <Choice text={el} click={checkAnswer} index={i} answered={answered} answer={true} key={i + '' + qNum} /> : <Choice text={el} click={checkAnswer} answered={answered} index={i} answer={false} key={i + '' + qNum} />)}
                 </div>
             </div>
-            <div className="timer" key={qNum + 'timer'} style={{ width: width + '%' }}></div>
+            <div className="timer" key={qNum + 'timer'}>
+                <div className="upper"></div>
+                <div className="middle" style={{ width: width + '%', backgroundColor: color }}></div>
+                <div className="lower"></div>
+            </div>
         </div>
     )
 }

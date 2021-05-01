@@ -31,9 +31,10 @@ export default function QuizApp(props) {
     let [score, setScore] = useState(0)
     let [answered, setAnswered] = useState(false)
     let [answers, setAnswers] = useState(new Array(questions.length).fill(false))
+    let [first, setFirst] = useState(true)
 
     let checkAnswer = (answer) => {
-        if (!answered) {   
+        if (!answered) {
             setAnswered(true)
             let copy = answers.slice()
             copy[qNum] = answer
@@ -41,7 +42,6 @@ export default function QuizApp(props) {
             if (answer === questions[qNum].answer) {
                 setScore(++score)
             }
-            setTimeout(() => nextQuestion(), 1000)
         }
     }
 
@@ -66,33 +66,38 @@ export default function QuizApp(props) {
         })
     }
 
-    // setTimeout(() => {
-    //     if (qNum !== questions.length - 1) {
-    //         nextQuestion()
-    //     }
-    //     else {
-    //         goToResult()
-    //     }
-    // }, 5000)
-
     let [width, setWidth] = useState(100)
 
     useEffect(() => {
         setAnswered(false)
     }, [qNum])
 
+    useEffect(() => {
+        if (!first) setTimeout(() => nextQuestion(), 1000)
+        else setFirst(false)
+        // eslint-disable-next-line
+    }, [answers])
+
+    useEffect(() => {
+        let timer = setInterval(() => setWidth((p) => --p), 50)
+        return () => clearInterval(timer)
+    }, [qNum])
+
+    useEffect(() => {
+        if (width < 0) nextQuestion()
+        // eslint-disable-next-line
+    }, [width])
+
     return (
         <div className="quiz-app">
             <div className="score">Score: {score}</div>
             <div className="questionCard">
-            <div className="question">{questions[qNum].question}</div>
-            <div className="choices">
-                    {questions[qNum].choices.map((el, i) => questions[qNum].answer === i ? <Choice text={el} click={checkAnswer} index={i} answered={answered} answer={true} key={i + '' + qNum} /> : <Choice text={el} click={checkAnswer} answered={answered} index={i} answer={false} key={i + '' + qNum}/>)}
+                <div className="question">{questions[qNum].question}</div>
+                <div className="choices">
+                    {questions[qNum].choices.map((el, i) => questions[qNum].answer === i ? <Choice text={el} click={checkAnswer} index={i} answered={answered} answer={true} key={i + '' + qNum} /> : <Choice text={el} click={checkAnswer} answered={answered} index={i} answer={false} key={i + '' + qNum} />)}
+                </div>
             </div>
-        </div>
-
-            <div className="timer" style={{ width: width + '%' }}></div>
-            <div className="test">{answers}</div>
+            <div className="timer" key={qNum + 'timer'} style={{ width: width + '%' }}></div>
         </div>
     )
 }

@@ -76,7 +76,7 @@ export default function QuizApp(props) {
 
     useEffect(() => {
         if (!first) {
-            setTimeout(() => nextQuestion(), 1000)
+            setTimeout(() => nextQuestion(), 1500)
         }
         else setFirst(false)
         // eslint-disable-next-line

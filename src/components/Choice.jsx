@@ -22,9 +22,9 @@ export default function Choice(props) {
     }
 
     return (
-        <div>
+        <div className='choice'>
             <button onClick={() => clicked()} style={{ backgroundColor: background }}>{props.text}</button>
-            <Confetti active={confetti} />
+            <Confetti active={confetti}/>
         </div>
     )
 }

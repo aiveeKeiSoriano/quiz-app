@@ -33,6 +33,7 @@ export default function QuizApp(props) {
     let [answers, setAnswers] = useState(new Array(questions.length).fill(false))
     let [first, setFirst] = useState(true)
     let [color, setColor] = useState('#68E32B')
+    let [start, setStart] = useState(false)
 
     let checkAnswer = (answer) => {
         if (!answered) {
@@ -47,7 +48,6 @@ export default function QuizApp(props) {
     }
 
     let nextQuestion = () => {
-        console.log(answers, '1')
         if (qNum !== questions.length - 1) {
             setQNum(++qNum)
             setWidth(100)
@@ -75,15 +75,20 @@ export default function QuizApp(props) {
     }, [qNum])
 
     useEffect(() => {
-        if (!first) setTimeout(() => nextQuestion(), 1000)
+        if (!first) {
+            setTimeout(() => nextQuestion(), 1000)
+        }
         else setFirst(false)
         // eslint-disable-next-line
     }, [answers])
 
     useEffect(() => {
-        let timer = setInterval(() => setWidth((p) => --p), 50)
+        let timer = setInterval(() => {
+            if (start) setWidth((p) => --p)
+        }, 60)
         return () => clearInterval(timer)
-    }, [qNum])
+        // eslint-disable-next-line
+    }, [qNum, start])
 
     useEffect(() => {
         if (width < 0) nextQuestion()
@@ -95,19 +100,24 @@ export default function QuizApp(props) {
     }, [width])
 
     return (
-        <div className="quiz-app">
-            <div className="score">Score: {score}</div>
-            <div className="questionCard">
-                <div className="question">{questions[qNum].question}</div>
-                <div className="choices">
-                    {questions[qNum].choices.map((el, i) => questions[qNum].answer === i ? <Choice text={el} click={checkAnswer} index={i} answered={answered} answer={true} key={i + '' + qNum} /> : <Choice text={el} click={checkAnswer} answered={answered} index={i} answer={false} key={i + '' + qNum} />)}
-                </div>
-            </div>
-            <div className="timer" key={qNum + 'timer'}>
-                <div className="upper"></div>
-                <div className="middle" style={{ width: width + '%', backgroundColor: color }}></div>
-                <div className="lower"></div>
-            </div>
+        <div className='home'>
+            {start &&
+                <div className="quiz-app">
+                    <div className="score">Score: {score}</div>
+                    <div className="questionCard">
+                        <div className="question">{questions[qNum].question}</div>
+                        <div className="choices">
+                            {questions[qNum].choices.map((el, i) => questions[qNum].answer === i ? <Choice text={el} click={checkAnswer} index={i} answered={answered} answer={true} key={i + '' + qNum} /> : <Choice text={el} click={checkAnswer} answered={answered} index={i} answer={false} key={i + '' + qNum} />)}
+                        </div>
+                    </div>
+                    <div className="timer" key={qNum + 'timer'}>
+                        <div className="upper"></div>
+                        <div className="middle" style={{ width: width + '%', backgroundColor: color }}></div>
+                        <div className="lower"></div>
+                    </div>
+                </div>}
+            {!start &&
+                <button className='start' onClick={() => setStart(true)}>Start Quiz</button>}
         </div>
     )
 }

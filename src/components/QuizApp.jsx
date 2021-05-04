@@ -84,11 +84,11 @@ export default function QuizApp(props) {
 
     useEffect(() => {
         let timer = setInterval(() => {
-            if (start) setWidth((p) => --p)
+            if (start && !answered) setWidth((p) => --p)
         }, 60)
         return () => clearInterval(timer)
         // eslint-disable-next-line
-    }, [qNum, start])
+    }, [qNum, start, answered])
 
     useEffect(() => {
         if (width < 0) nextQuestion()

@@ -76,7 +76,7 @@ export default function QuizApp(props) {
 
     useEffect(() => {
         if (!first) {
-            setTimeout(() => nextQuestion(), 1500)
+            setTimeout(() => nextQuestion(), 1000)
         }
         else setFirst(false)
         // eslint-disable-next-line
@@ -85,7 +85,7 @@ export default function QuizApp(props) {
     useEffect(() => {
         let timer = setInterval(() => {
             if (start && !answered) setWidth((p) => --p)
-        }, 60)
+        }, 50)
         return () => clearInterval(timer)
         // eslint-disable-next-line
     }, [qNum, start, answered])
